@@ -36,6 +36,8 @@ Solusi yang dapat dilakukan untuk memenuhi goals proyek ini diantaranya sebagai 
     <br><br>
     _y = mx + b + e_
     <br><br>
+    _Keterangan :_
+    <br>
     _y = dependent variable_
     <br>
     _m = slope dari garis (persamaan diatas merupakan sebuah garis)_
@@ -66,3 +68,87 @@ Pada berkas yang diunduh pada [link tersebut](https://www.kaggle.com/datasets/ru
 
 - Years of Experience: merupakan total tahun pengalaman kerja.
 - Salary: merupakan total gaji karyawan per tahun dalam kurs dollar.
+
+### Exploratory Data Analysis - Univariate Analysis
+
+![Univariate](./images/univariate.png)
+
+Dari hasil visualisasi di atas dapat disimpulkan bahwa:
+
+- Sebagian besar sampel Years of experience berada di kisaran 8-14 tahun.
+- Sebagian besar sampel Salary berada di kisaran 86000-90000.
+
+### Exploratory Data Analysis - Multivariate Analysis
+
+![Multivariate 1](./images/multivariate.png)
+
+Dari hasil visualisasi data di atas dapat disimpulkan bahwa:
+
+- Pola sebaran data pada grafik pairplot di atas memiliki korelasi posistif.<br><br>
+
+![Multivariate 2](./images/pairplot.png)
+
+Berdasarkan visualisasi heatmap di atas dapat disimpulkan bahwa:
+
+- Variabel Years of experience berkorelasi positif dengan variabel Salary, skornya yaitu 0.8.
+
+## Data Preparation
+
+Berikut merupakan tahapan-tahapan dalam Data Preparation:
+
+- Melakukan Split Data, dataset yang ada dibagi menjadi 2 bagian yaitu data latih dan data uji dengan rasio 80:10. Proses ini dilakukan dengan menggunakan modul [train_test_split](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html) dari library scikit-learn.
+- Melakukan standarisasi pada data latih dengan menggunakan StandardScaler dari library sckit-learn.
+
+## Modeling
+
+Setelah melakukan data preparation data yang sudah siap akan digunakan untuk membuat model, kali ini akan dibuat 2 model sebagai perbandingan.
+
+- Membuat model dengan menggunakan algoritma [LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html), alasan menggunakan algoritma ini karena ini merupakan algortima yang umum untuk menyelesaikan permasalahan regresi, kelebihan dari algoritma ini yaitu mudah dipahami.
+- Membuat model dengan menggunakan algoritma [RandomForest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html), kelebihan dari menggunakan algoritma ini yaitu dapat mengatasi noise dan missing value serta dapat mengatasi data dalam jumlah yang besar, adapun kekurangan pada algoritma Random Forest yaitu interpretasi yang sulit dan membutuhkan tuning model yang tepat untuk data [[5]](https://eprints.umm.ac.id/39299/3/BAB%202.pdf).
+
+## Evaluation
+
+Proses evaluasi model pada proyek ini menggunakan metrik Mean Squared Error yang menghitung jumlah selisih kuadrat rata-rata nilai sebenarnya dengan nilai prediksi [[6]](https://www.dicoding.com/academies/319/tutorials/18595).
+
+MSE didefinisikan dalam persamaan berikut:
+
+![image](https://cdn-media-1.freecodecamp.org/images/hmZydSW9YegiMVPWq2JBpOpai3CejzQpGkNG)
+
+_Keterangan:  
+N = jumlah dataset  
+yi = nilai sebenarnya  
+y_pred = nilai prediksi_
+
+### Model dengan Algoritma LinearRegression
+
+![LR 1](./images/linearregression.png)
+
+Seperti terlihat pada gambar, model yang dibuat menggunakan algortima LinearRegression memiliki nilai MSE yang sangat tinggi hingga mencapai 113458.095232 pada saat training dan 127004.94334 pada saat test, hal ini menunjukkan algoritma ini kurang baik untuk melakukan prediksi.
+
+![image](./images/lr1.png)
+
+Pada proses pengujian pun dapat terlihat hasil prediksi tidak akurat dengan nilai sebenarnya.
+
+### Model dengan Algoritma RandomForest
+
+![RF 1](./images/randomforest.png)
+
+Seperti terlihat pada gambar, saat dibandingkan dengan algoritma LinearRegression terlihat algortima RandomForest memiliki nilai MSE yang lebih rendah yaitu 13235.129443 pada saat training dan 15922.675464 pada saat test, hal ini menunjukkan algoritma RandomForest lebih baik untuk melakukan prediksi dibanding LinearRegression.
+
+![image](./images/rf1.png)
+
+Pada proses pengujian dapat terlihat hasil prediksi dari model yang menggunakan RandomForest lebih akurat dengan nilai sebenarnya. Oleh karena itu algoritma ini yang akan dipilih sebagai model utama untuk memprediksi kisaran gaji karyawan.
+
+## Referensi
+
+[1] https://majoo.id/solusi/detail/rekrutmen-adalah#:~:text=Rekrutmen%20adalah%20proses%20mencari%20dan,mudah%20mencari%20karyawan%20yang%20berkualitas.
+
+[2] http://riset.unisma.ac.id/index.php/jrm/article/view/8261
+
+[3] https://medium.com/@adiptamartulandi/belajar-machine-learning-simple-linear-regression-di-python-e82972695eaf
+
+[4] https://caraguna.com/apa-itu-linear-regression-dalam-machine-learning/
+
+[5] https://eprints.umm.ac.id/39299/3/BAB%202.pdf
+
+[6] https://www.dicoding.com/academies/319/tutorials/18595
