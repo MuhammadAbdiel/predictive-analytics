@@ -102,11 +102,55 @@ Setelah melakukan data preparation data yang sudah siap akan digunakan untuk mem
     <br>  
     ![image](https://docs.microsoft.com/id-id/analysis-services/data-mining/media/linear-regression.png?view=asallproducts-allversions)
 
+  - Penerapan Linear Regression pada Data
+
+    - Persiapan Data
+
+      - Data yang digunakan terdiri dari lama pengalaman kerja (independent variable) dan gaji (dependent variable).
+      - Data di-split menjadi data training dan data testing.
+
+    - Inisialisasi dan Training Model
+
+      - Model Linear Regression diinisiasi dan dilatih menggunakan data training. Proses pelatihan ini melibatkan pencarian nilai slope dan intercept yang meminimalkan error antara nilai prediksi dan nilai sebenarnya.
+
+    - Evaluasi Model
+
+      - Model dievaluasi menggunakan Mean Squared Error (MSE) pada data training dan testing untuk mengukur seberapa baik model memprediksi gaji berdasarkan pengalaman kerja.
+
+  - Cara Kerja Linear Regression terhadap Data yang Digunakan
+
+    - Memahami Data: Algoritma Linear Regression memahami data dengan mencari hubungan linear antara variabel independen (pengalaman kerja) dan variabel dependen (gaji).
+    - Menentukan Garis Regresi: Algoritma menghitung slope (m) dan intercept (b) yang paling sesuai dengan data untuk meminimalkan error (e). Persamaan yang dihasilkan adalah garis yang paling cocok untuk data tersebut.
+    - Prediksi: Setelah garis regresi ditentukan, model dapat digunakan untuk memprediksi gaji berdasarkan pengalaman kerja dengan menggunakan persamaan y = mx + b.
+
 - Membuat model dengan menggunakan algoritma [RandomForest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html), kelebihan dari menggunakan algoritma ini yaitu dapat mengatasi noise dan missing value serta dapat mengatasi data dalam jumlah yang besar, adapun kekurangan pada algoritma Random Forest yaitu interpretasi yang sulit dan membutuhkan tuning model yang tepat untuk data [[5]](https://eprints.umm.ac.id/39299/3/BAB%202.pdf).
 
   - Konsep dari algoritma RandomForest yaitu model prediksi yang terdiri dari beberapa model dan bekerja secara bersama-sama. Kelebihan dari metode ini yakni jika dataset berjumlah banyak maka RandomForest akan bekerja secara efisien.
     <br><br>
     ![image](https://dicoding-web-img.sgp1.cdn.digitaloceanspaces.com/original/academy/dos:5e086364e59025d11dd0dfd3bc965e7c20210912094833.png)
+
+  - Penerapan Random Forest pada Data
+
+    - Inisialisasi Model:
+
+      - Model Random Forest diinisiasi dengan menggunakan 50 estimators, kedalaman maksimal 16, random state 55 untuk memastikan hasil yang reproducible, dan menggunakan semua core prosesor yang tersedia untuk mempercepat proses pelatihan.
+
+    - Training Model:
+
+      - Model dilatih menggunakan data training. Proses pelatihan ini melibatkan pembuatan beberapa decision trees dari subset data yang berbeda. Setiap tree berkontribusi pada prediksi akhir dengan cara yang sedikit berbeda, yang membantu meningkatkan akurasi keseluruhan model.
+
+    - Evaluasi Model:
+
+      - Model dievaluasi menggunakan Mean Squared Error (MSE) pada data training untuk mengukur seberapa baik model memprediksi gaji berdasarkan pengalaman kerja.
+
+  - Cara Kerja Random Forest terhadap Data yang Digunakan
+
+    - Memahami Data: Algoritma Random Forest memahami data dengan membuat beberapa decision trees dari subset data yang berbeda. Setiap tree berfokus pada fitur yang berbeda dan mencoba untuk memprediksi output (gaji) berdasarkan input (pengalaman kerja).
+    - Membuat Trees: Setiap decision tree dibuat dengan mengambil subset dari data training, sehingga setiap tree memiliki variasi dalam hal data yang digunakan. Ini membantu model untuk menangkap berbagai pola dalam data.
+    - Menggabungkan Prediksi: Algoritma menggabungkan hasil dari semua decision trees untuk mendapatkan prediksi yang lebih stabil dan akurat. Prediksi akhir adalah rata-rata dari semua prediksi trees.
+    - Menangani Variabilitas: Dengan membuat beberapa decision trees, algoritma mampu menangani variabilitas dan mengurangi overfitting, menghasilkan model yang lebih robust terhadap noise dalam data.
+
+Dengan proses ini, diharapkan model Random Forest dapat memberikan prediksi gaji yang lebih akurat dibandingkan dengan Linear Regression. Evaluasi menggunakan MSE menunjukkan bahwa Random Forest memiliki performa yang lebih baik dalam memprediksi gaji berdasarkan pengalaman kerja.
 
 ## Evaluation
 
