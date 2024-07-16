@@ -8,9 +8,13 @@ Original file is located at
 
 # **Muhammad Abdiel Firjatullah**
 
-# **Predictive Analytics**
+# **Predictive Analytics - Prediksi Gaji Karyawan Berdasarkan Tahun Pengalaman Kerja**
 
-## Import Library
+## Deskripsi Proyek
+
+Topik yang diangkat dari proyek ini yaitu mengenai bidang ekonomi dan bisnis, di mana suatu perusahaan akan mengadakan perekrutan karyawan baru oleh karena itu perusahaan ingin mengetahui kisaran gaji berdasarkan tahun pengalaman bekerja calon pelamarnya. Untuk memprediksinya, perusahaan akan mencoba menerapkan 2 model machine learning dan kemudian memilih model yang prediksinya paling mendekati.
+
+## 1. Import Library
 """
 
 # Install public API Kaggle
@@ -37,9 +41,17 @@ from sklearn.metrics import mean_squared_error
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 
-"""## Data Understanding
+"""## 2. Data Understanding
 
-### Data Loading
+Data Understanding merupakan proses memahami informasi dalam data dan menentukan kualitas dari data tersebut.
+
+### 2.1 Data Loading
+
+Data Loading merupakan tahap untuk memuat dataset yang akan digunakan agar dataset lebih mudah dipahami.             
+
+
+*Dataset yang digunakan pada proyek ini:*  
+https://www.kaggle.com/datasets/rubydoby/years-of-experience-and-employees-salary
 """
 
 # Membuat direktori baru bernama kaggle
@@ -57,35 +69,49 @@ from sklearn.linear_model import LinearRegression
 # Ekstrak berkas zip
 !unzip /content/years-of-experience-and-employees-salary.zip
 
+"""Melihat isi dataset"""
+
 # Melihat isi dataset
 salary = pd.read_csv('/content/employee_salaries.csv')
 salary
 
-"""### Exploratory Data Analysis
+"""### 2.2 Exploratory Data Analysis (EDA)
 
-EDA - Deskripsi Variabel
+Exploratory data analysis merupakan proses investigasi awal pada data untuk menganalisis karakteristik, menemukan pola, anomali, dan memeriksa asumsi pada data. Teknik ini biasanya menggunakan bantuan statistik dan representasi grafis atau visualisasi.
+
+2.2.1 EDA - Deskripsi Variabel
 """
 
 # Melihat informasi pada dataset
 salary.info()
 
+"""Mengecek deskripsi statistik data"""
+
 # Mengecek deskripsi statistik data
 salary.describe()
 
-"""EDA - Menangani Missing Value dan Outliers"""
+"""2.2.2 EDA - Menangani Missing Value dan Outliers"""
 
 # Mengecek dataset jika ada yang kosong
 salary.isna().sum()
+
+"""Menghapus baris data jika ada yang kosong"""
 
 # Menghapus baris data jika ada yang kosong
 salary = salary.dropna(axis=0)
 salary.shape
 
+"""Visualisasi pada fitur untuk melihat outliers"""
+
 # Visualisasi pada fitur untuk melihat outliers
 sns.boxplot(x=salary['Years of Experience'])
 
+"""Visualisasi pada fitur untuk melihat outliers"""
+
 # Visualisasi pada fitur untuk melihat outliers
 sns.boxplot(x=salary['Salary'])
+
+"""Menangani outliers dengan IQR method dan Cek ukuran dataset setelah outliers di drop"""
 
 # Menangani outliers dengan IQR method
 Q1 = salary.quantile(0.25)
@@ -96,16 +122,18 @@ salary=salary[~((salary<(Q1-1.5*IQR))|(salary>(Q3+1.5*IQR))).any(axis=1)]
 # Cek ukuran dataset setelah outliers di drop
 salary.shape
 
-"""EDA - Univariate Analysis"""
+"""2.2.3 EDA - Univariate Analysis"""
 
 # Visualisasi fitur numerik untuk melihat masing-masing histogram
 salary.hist(bins=50, figsize=(20,15))
 plt.show()
 
-"""EDA - Multivariate Analysis"""
+"""2.2.4 EDA - Multivariate Analysis"""
 
 # Mengamati hubungan antar fitur dengan fungsi pairplot()
 sns.pairplot(salary, diag_kind = 'kde')
+
+"""Mengamati korelasi antar fitur dengan menggunakan heatmap"""
 
 # Mengamati korelasi antar fitur dengan menggunakan heatmap
 plt.figure(figsize=(10, 8))
@@ -114,9 +142,11 @@ correlation_matrix = salary.corr().round(2)
 sns.heatmap(data=correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5, )
 plt.title("Matriks Korelasi untuk Fitur Numerik ", size=20)
 
-"""## Data Preparation
+"""## 3. Data Preparation
 
-### Train-Test-Split
+Data Preparation merupakan tahap untuk mempersiapkan data sebelum masuk ke tahap pembuatan model Machine Learning.
+
+### 3.1 Train-Test-Split
 """
 
 # Membagi dataset menjadi data latih dan data uji, kali ini proporsi pembagiannya adalah 90:10
@@ -124,11 +154,13 @@ X = salary.drop(["Salary"],axis =1)
 y = salary["Salary"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.1, random_state = 123)
 
+"""Melihat total sampel dalam dataset"""
+
 print(f'Total seluruh sampel dalam dataset: {len(X)}')
 print(f'Total sampel dalam train dataset: {len(X_train)}')
 print(f'Total samepl dalam test dataset: {len(X_test)}')
 
-"""### Standarisasi"""
+"""### 3.2 Standarisasi"""
 
 # Melakukan proses standarisasi pada data latih menggunakan StandardScaler
 numerical_features = ['Years of Experience']
@@ -137,29 +169,36 @@ scaler.fit(X_train[numerical_features])
 X_train[numerical_features] = scaler.transform(X_train.loc[:, numerical_features])
 X_train[numerical_features].head()
 
+"""Melihat statistik data yang sudah di standarisasi"""
+
 # Melihat statistik data yang sudah di standarisasi
 X_train[numerical_features].describe().round(4)
 
-"""## Model Development
+"""## 4. Model Development
 
-### Mempersiapkan dataframe untuk analisis model
+Model development adalah tahapan di mana kita menggunakan algoritma machine learning untuk menjawab problem statement dari tahap business understanding.
+
+### 4.1 Mempersiapkan dataframe untuk analisis model
 """
 
 models = pd.DataFrame(index=['train_mse', 'test_mse'],
                       columns=['LinearRegression'])
 
-"""### Membuat Model dengan Algoritma Linear Regression"""
+"""### 4.2 Membuat Model dengan Algoritma Linear Regression"""
 
 LR = LinearRegression(n_jobs = -1)
 LR.fit(X_train,y_train)
 models.loc['train_mse','LR'] = mean_squared_error(y_pred=LR.predict(X_train), y_true=y_train)
 
-"""## Evaluasi Model"""
+"""## 5. Evaluasi Model
+
+Proses Evaluasi Model merupakan tahap untuk membuktikan suatu model cocok dengan tujuan yang telah ditentukan dan untuk memastikan model mampu membuat prediksi yang akurat.
+"""
 
 # Melakukan standarisasi terhadap fitur numerik pada data uji
 X_test.loc[:, numerical_features] = scaler.transform(X_test[numerical_features])
 
-"""### Evaluasi Model Menggunakan Metrik MSE"""
+"""### 5.1 Evaluasi Model Menggunakan Metrik MSE"""
 
 # Membuat variabel mse yang berisi dataframe dari nilai mse data latih dan data uji pada model
 mse = pd.DataFrame(columns=['train', 'test'], index=['LinearRegression'])
@@ -175,12 +214,14 @@ for name, model in model_dict.items():
 # memanggil mse
 mse
 
+"""Visualisasi plot metrik"""
+
 # Visualisasi plot metrik
 fig, ax = plt.subplots()
 mse.sort_values(by='test', ascending=False).plot(kind='barh', ax=ax, zorder=3)
 ax.grid(zorder=0)
 
-"""### Melakukan Pengujian"""
+"""### 5.2 Melakukan Pengujian"""
 
 # Melakukan pengujian terhadap model
 prediksi = X_test.iloc[2:3].copy()
@@ -190,9 +231,11 @@ for name, model in model_dict.items():
 
 pd.DataFrame(pred_dict)
 
-"""## Improvement
+"""## 6. Improvement
 
-### Membuat Model dengan Algoritma Random Forest
+Dikarenakan hasil prediksi dengan menggunakan algoritma Linear Regression masih kurang akurat dari nilai aslinya, oleh karena itu kita akan membandingkannya dengan algoritma lain yaitu Random Forest.
+
+### 6.1 Membuat Model dengan Algoritma Random Forest
 """
 
 # Membuat model prediksi menggunakan algoritma Random Forest
@@ -201,7 +244,7 @@ RF.fit(X_train, y_train)
 
 models.loc['train_mse','RandomForest'] = mean_squared_error(y_pred=RF.predict(X_train), y_true=y_train)
 
-"""### Membandingkan Hasil Evaluasi dari Kedua Model Menggunakan Metrik MSE"""
+"""### 6.2 Membandingkan Hasil Evaluasi dari Kedua Model Menggunakan Metrik MSE"""
 
 # Membuat variabel mse yang berisi dataframe dari nilai mse data latih dan data uji pada model
 mse = pd.DataFrame(columns=['train', 'test'], index=['LinearRegression', 'RandomForest'])
@@ -217,12 +260,14 @@ for name, model in model_dict.items():
 # Memanggil mse untuk membandingkan model
 mse
 
+"""Visualisasi plot metrik"""
+
 # Visualisasi plot metrik
 fig, ax = plt.subplots()
 mse.sort_values(by='test', ascending=False).plot(kind='barh', ax=ax, zorder=3)
 ax.grid(zorder=0)
 
-"""### Melakukan Pengujian dari Kedua Model"""
+"""### 6.3 Melakukan Pengujian dari Kedua Model"""
 
 # Melakukan pengujian terhadap model
 prediksi = X_test.iloc[2:3].copy()
